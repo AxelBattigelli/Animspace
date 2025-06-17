@@ -34,6 +34,9 @@ jobs:
             -configuration Release \
             -sdk iphoneos \
             -derivedDataPath build
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM=XXXXXXXXXX \
+            ENABLE_BITCODE=NO
 
       - name: Export .ipa
         run: |

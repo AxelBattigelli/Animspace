@@ -32,17 +32,21 @@ jobs:
       - name: Create local.properties
         run: echo "sdk.dir=$ANDROID_HOME" > android/local.properties
 
-      - name: Build APK and AAB (Release)
+      - name: Build APK (Release)
         run: |
           cd android
           ./gradlew assembleRelease
-          ./gradlew bundleRelease
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
           path: android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Build AAB (Release)
+        run: |
+          cd android
+          ./gradlew bundleRelease
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
