@@ -1,0 +1,50 @@
+name: iOS Build
+
+on:
+  workflow_call:
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install JS dependencies
+        run: |
+          npm install
+
+      - name: Install CocoaPods dependencies
+        run: |
+          cd ios
+          pod install
+
+      - name: Build iOS app (Release)
+        run: |
+          cd ios
+          xcodebuild \
+            -workspace Animspace.xcworkspace \
+            -scheme Animspace \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build
+
+      - name: Export .ipa
+        run: |
+          cd ios
+          xcodebuild -exportArchive \
+            -archivePath build/Build/Products/Release-iphoneos/Animspace.xcarchive \
+            -exportOptionsPlist exportOptions.plist \
+            -exportPath build/Release
+
+      - name: Upload .ipa artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-ipa
+          path: ios/build/Release/*.ipa
